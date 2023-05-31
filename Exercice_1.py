@@ -36,6 +36,15 @@ def erreur_integration_num (valeur_exacte, valeur_calcule):
 def Convergence_selon_n (n,p1,p2,p3,p4):
     return round(100*erreur_integration_num(integration_exacte (-2,3,p1,p2,p3,p4),methode_des_rectangles(n,p1,p2,p3,p4))/integration_exacte (-2,3,p1,p2,p3,p4),5)
 
+#NUMPY
+def methode_des_rectangles_numpy(n,a,b,p1,p2,p3,p4): 
+    intervalle = np.linspace(a,b,n+1)
+    tab = np.array(0)
+    for i in (0,len(intervalle)-2) :
+        aire = fonction(intervalle[i]+ (intervalle[i+1] - intervalle[i])/2,p1,p2,p3,p4) * (intervalle[i + 1] - intervalle[i]) 
+    print(tab)
+    return np.sum(tab)
+
 p1=5
 p2=2
 p3=4
@@ -56,6 +65,9 @@ print(f"La valeur d'intégration est de {erreur_integration} soit environ {erreu
 #print(Convergence_selon_n(50,p1,p2,p3,p4))
 #print(Convergence_selon_n(500,p1,p2,p3,p4))
 #print(timeit('Convergence_selon_n(500,p1,p2,p3,p4)',globals=globals(),number=1))
+
+
+print(methode_des_rectangles_numpy(10,-2,3,p1,p2,p3,p4))
 
 
 
