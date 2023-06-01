@@ -4,46 +4,116 @@ from timeit import timeit
 import time
 
 def créer_arguments():
-    a = input(int("Entrez le premier point de l'intervalle"))
-    b = input(int("Entrez le dernier point de l'intervalle"))
-    p1 = input(int("Entrez "))
-    p2 = input(int("Entrez "))
-    p3 = input(int("Entrez "))
-    p4 = input(int("Entrez "))
-    x =  input(int("Entrez "))
-    return a, b, p1, p2, p3, p4, x
+    a = input(int("Entrez la borne inférieur de l'intervalle: "))
+    b = input(int("Entrez la borne supérieure de l'intervalle: "))
+    p1 = input(int("Entrez le coefficient p1 du polynôme: "))
+    p2 = input(int("Entrez le coefficient p2 du polynôme: "))
+    p3 = input(int("Entrez le coefficient p3 du polynôme: "))
+    p4 = input(int("Entrez le coefficient p4 du polynôme: "))
+    return a, b, p1, p2, p3, p4
 
 def integration_exacte (a,b,p1,p2,p3,p4):
     I_exacte = p1*(b-a)+p2*(b**2-a**2)/2 +p3*(b**3-a**3)/3 + p4*(b**4-a**4)/4
     return I_exacte
        
-def det_solution_analytique(x,p1,p2,p3,p4):
+def fonction(x,p1,p2,p3,p4):
     return p1 + p2*x +p3*x**2 + p4*x**3
-
-def methode_des_rectangles(n,p1,p2,p3,p4,a,b):
-   I_calc = 0
-   pas = (b - a) / n
-   intervalle = [a + i * pas for i in range(n + 1)]
-   for i in range(n):
-        aire = det_solution_analytique(intervalle[i] + (intervalle[i + 1] - intervalle[i])/2, p1, p2, p3, p4) * (intervalle[i + 1] - intervalle[i])
-        I_calc += aire
-   return I_calc
 
 def erreur_integration_num (valeur_exacte, valeur_calcule):
     erreur = abs(valeur_exacte-valeur_calcule)/valeur_exacte
     return erreur
 
-def Convergence_selon_n (n,p1,p2,p3,p4):
-    return round(100*erreur_integration_num(integration_exacte (-2,3,p1,p2,p3,p4),methode_des_rectangles(n,p1,p2,p3,p4))/integration_exacte (-2,3,p1,p2,p3,p4),5)
+def Convergence_selon_n (n,a,b,p1,p2,p3,p4,type):
+    if type == 'base' : 
+        return round(100*erreur_integration_num(integration_exacte(-2,3,p1,p2,p3,p4),methode_des_rectangles_basique(n,a,b,p1,p2,p3,p4))/integration_exacte (a,b,p1,p2,p3,p4),5)
+    elif type == 'numpy' : 
+        return round(100*erreur_integration_num(integration_exacte(-2,3,p1,p2,p3,p4),methode_des_rectangles_numpy(n,a,b,p1,p2,p3,p4))/integration_exacte (-2,3,p1,p2,p3,p4),5)
+    else : 
+        print("Le type saisi doit être 'base' ou 'numpy'")
+    
+#Méthode des rectangles utilisant du python de base
+def methode_des_rectangles_basique(n,a,b,p1,p2,p3,p4):
+   I_calc = 0
+   pas = (b - a) / n
+   intervalle = [a + i * pas for i in range(n + 1)]
+   for i in range(n):
+        aire = fonction(intervalle[i] + (intervalle[i + 1] - intervalle[i])/2, p1, p2, p3, p4) * (intervalle[i + 1] - intervalle[i])
+        I_calc += aire
+   return I_calc
 
-#NUMPY
+#Méthode des rectangles en utilisant la librairie NUMPY
 def methode_des_rectangles_numpy(n,a,b,p1,p2,p3,p4): 
-    intervalle = np.linspace(a,b,n+1)
-    tab = np.array(0)
-    for i in (0,len(intervalle)-2) :
-        aire = fonction(intervalle[i]+ (intervalle[i+1] - intervalle[i])/2,p1,p2,p3,p4) * (intervalle[i + 1] - intervalle[i]) 
-    print(tab)
-    return np.sum(tab)
+    abscisse_bord_rectangle = np.linspace(a,b,n+1)
+    abscisse_centre_rectangle = abscisse_bord_rectangle[:-1] + ((b-a)/(2*n))
+    ordonnee_centre_rectangle = fonction(abscisse_centre_rectangle,p1,p2,p3,p4)
+    aire_totale = np.sum(ordonnee_centre_rectangle*(b-a)/n)
+    return aire_totale
+
+
+def main():
+    n = 50 #Valeur pour les tests de vitesse
+    #a, b, p1, p2, p3, p4 = créer_arguments()
+    I_exacte = round(integration_exacte (a,b,p1,p2,p3,p4),5)
+    
+    I_calcul_base = round(methode_des_rectangles_basique(n,a,b,p1,p2,p3,p4),5)
+    print(f"Pour un nombre de segments de {n}, la valeur calculée est : {I_calcul_base} et la valeur exacte est : {I_exacte} ")
+
+    erreur_integration = erreur_integration_num(I_exacte, I_calcul_base)
+    erreur_integration_prct = round(erreur_integration*100,5)
+    print(f"L'erreur d'intégration est de {erreur_integration} soit environ {erreur_integration_prct} %\n")
+   
+    I_calcul_numpy = round(methode_des_rectangles_numpy(n,a,b,p1,p2,p3,p4),5)
+    print(f"Pour un nombre de segments de {n}, la valeur calculée avec numpy est : {I_calcul_numpy} et la valeur exacte est : {I_exacte} ")
+    erreur_integration_numpy = erreur_integration_num(I_exacte, I_calcul_numpy)
+    erreur_integration_prct_numpy = round(erreur_integration_numpy*100,5)
+    print(f"L'erreur d'intégration est de {erreur_integration_numpy} soit environ {erreur_integration_prct_numpy}%\n")
+   
+    temps_calcul_numpy = timeit('Convergence_selon_n(500,a,b,p1,p2,p3,p4,\'numpy\')',globals=globals(),number=1)
+    temps_calcul_base = timeit('Convergence_selon_n(500,a,b,p1,p2,p3,p4,\'base\')',globals=globals(),number=1)
+    
+    print(f'Le temps de calcul de la convergence pour n=500 en utilisant du python de base est de {temps_calcul_base} secondes')
+    print(f'Le temps de calcul de la convergence pour n=500 en utilisant numpy est de {temps_calcul_numpy} secondes')
+
+    print(f'Numpy est {round(temps_calcul_base/temps_calcul_numpy)} fois plus rapide\n')
+    
+    #Affichage des courbes et des valeurs de convergences à n = 15, 100 et 500
+    
+    Tab_I_calcul = np.zeros((500))
+    for n in range (1,501):
+        I_calcul_numpy = round(methode_des_rectangles_basique(n,a,b,p1,p2,p3,p4),5)
+        Tab_I_calcul[n-1]=I_calcul_numpy
+        if n == 15 or n== 50 or n==500 :
+            erreur_integration_numpy = erreur_integration_num(I_exacte, I_calcul_numpy)
+            erreur_integration_prct_numpy = round(erreur_integration_numpy*100,5)
+            print(f"L'erreur d'intégration (pour n={n}) est de {erreur_integration_numpy} soit environ {erreur_integration_prct_numpy}%\n")
+            
+        
+    '''#Premier plot de 1 à 500 (on voit pas grand chose)    
+    plt.plot(np.linspace(1,500,500),Tab_I_calcul,color='red',label='Intégrale calculée avec la méthode des rectangles')
+    plt.plot(np.linspace(1,500,500),np.ones(500)*I_exacte,color='blue',label='Intégrale exacte')
+    plt.xlabel('Nombre de segment sur l\'intervalle d\'intégration')
+    plt.ylabel('Valeur de l\'intégrale')
+    plt.legend()
+    plt.grid()
+    plt.show()'''
+    
+    #Second plot de 15 à 100 (On voit la convergence)
+    plt.plot(np.linspace(15,100,85),Tab_I_calcul[14:99],color='red',label='Intégrale calculée avec la méthode des rectangles')
+    plt.plot(np.linspace(15,100,75),np.ones(75)*I_exacte,color='blue',label='Intégrale exacte')
+    plt.xlabel('Nombre de segment sur l\'intervalle d\'intégration')
+    plt.ylabel('Valeur de l\'intégrale')
+    plt.title('Valeur de l\'intégrale de la fonction en fonction du nombre de segments en utilisant la méthode des rectangles centrés')
+    plt.legend()
+    plt.grid()
+    plt.show()
+    
+        
+        
+
+
+
+
+
 
 p1=5
 p2=2
@@ -51,15 +121,7 @@ p3=4
 p4=2
 a = -2
 b = 3
-n = 10
 
-I_exacte = round(integration_exacte (a,b,p1,p2,p3,p4),2)
-I_calc = round(methode_des_rectangles(n,p1,p2,p3,p4,a,b),2)
-print(f"Pour un nombre de segments de {n}, la valeur calculée est : {I_calc} et la valeur exacte est : {I_exacte} ")
-
-erreur_integration = erreur_integration_num(I_exacte, I_calc)
-erreur_integration_prct = round(erreur_integration/100,5)
-print(f"La valeur d'intégration est de {erreur_integration} soit environ {erreur_integration_prct} pourcent")
 
 #print(Convergence_selon_n(15,p1,p2,p3,p4))
 #print(Convergence_selon_n(50,p1,p2,p3,p4))
@@ -67,8 +129,7 @@ print(f"La valeur d'intégration est de {erreur_integration} soit environ {erreu
 #print(timeit('Convergence_selon_n(500,p1,p2,p3,p4)',globals=globals(),number=1))
 
 
-print(methode_des_rectangles_numpy(10,-2,3,p1,p2,p3,p4))
-
+main()
 
 
 
