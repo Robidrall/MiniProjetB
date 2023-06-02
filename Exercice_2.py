@@ -36,6 +36,7 @@ def Solution_initiale (X,Y) :
     plt.contourf(X,Y,T_init)
     plt.colorbar()
     plt.show()
+    return T_init
        
 def Visualisation_temperature_instantanee (T): 
     X,Y = Creation_grille()
@@ -43,23 +44,18 @@ def Visualisation_temperature_instantanee (T):
     plt.colorbar()
     plt.show()
 
-def Calcul_RHS(x0,y0,X,Y,diffusivite,x_b,y_b):
-    #A voir si on doit appliquer les conditions aux différents termes de terme_1 et terme_2
-    if x0 >= x_b or x0 <= 0 or y0 <= 0 or y0 >= y_b :  
-        #Prise en compte des conditions limites
-        return 0
-    else : 
-        terme_1 = (Calcul_T(x0+delta_x,y0,X,Y)+Calcul_T(x0-delta_x,y0,X,Y)-2*Calcul_T(x0,y0,X,Y))/(delta_x**2)
-        terme_2 = (Calcul_T(x0,y0+delta_y,X,Y)+Calcul_T(x0,y0-delta_y,X,Y)-2*Calcul_T(x0,y0,X,Y))/(delta_y**2)
-        return diffusivite*(terme_1+terme_2)
+def Calcul_RHS(T,diffusivite):
+    RHS_petite = diffusivite*(((T[2:,1:-1]-2*T[1:-1,1:-1]+T[:-2,1:-1])/delta_x**2)+((T[1:-1,:-2]-2*T[1:-1,1:-1]+T[1:-1,2:])/delta_y**2))
+    
+    RHS_grande = np.ones((RHS_petite.shape[0]+2,RHS_petite.shape[1] + 2))*temp_cond_isotherme
+    RHS_grande[1:-1,1:-1] = RHS_petite
+    return RHS_grande
 
-def Avancement_temporel (x0, y0, X, Y): 
+def Avancement_temporel (T,diffusivite): 
     dt = (F0*delta_x**2)/K
-    T_suivant=Calcul_T(x_c,y_c,X,Y)
-    for i in range(0,dim_x) :
-        for j in range(0,dim_y) : 
-            # T_suivant[i][j] = T_suivant[i][j] + dt*Calcul_RHS(i,j,X,Y,diffusivite,dim_x,dim_y) bug !!
-    Visualisation_temperature_instantanee(T_suivant)
+    T_Suivant = T+dt*Calcul_RHS(T,diffusivite)
+    return T_Suivant    
+    
 
     
 def Main() : 
@@ -68,10 +64,17 @@ def Main() :
     X,Y=Creation_grille()
     #Affichage des conditions initiales
     print("Affichage des conditions initiales")     
-    Solution_initiale(X,Y)
+    T_init = Solution_initiale(X,Y)
     #Avancement temporel 
-    Avancement_temporel(x_c,y_c,X, Y)
     
+    for t in range(1,100): 
+        T_Suivant = Avancement_temporel(T_init,diffusivite)
+        T_init=T_Suivant
+        if t%2 == 0 :
+            Visualisation_temperature_instantanee(T_Suivant)
+            
+        
+
     
     
     
