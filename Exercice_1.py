@@ -49,8 +49,96 @@ def methode_des_rectangles_numpy(n,a,b,p1,p2,p3,p4):
     aire_totale = np.sum(ordonnee_centre_rectangle*(b-a)/n)
     return aire_totale
 
+def Erreur_integration_type(n,a,b,p1,p2,p3,p4):
+        I_calcul_base = methode_des_rectangles_basique(n, a, b, p1, p2, p3, p4)
+        I_exacte = integration_exacte(a, b, p1, p2, p3, p4)
+        erreur_integration_base = erreur_integration_num(I_exacte, I_calcul_base)
 
-def main():
+        I_calcul_numpy = methode_des_rectangles_numpy(n, a, b, p1, p2, p3, p4)
+        I_exacte = integration_exacte(a, b, p1, p2, p3, p4)
+        erreur_integration_numpy = erreur_integration_num(I_exacte, I_calcul_numpy)
+
+        return erreur_integration_numpy, erreur_integration_base
+
+def tracer_convergence(n_max, a, b, p1, p2, p3, p4):
+    convergences = []
+    n_liste = range(1, n_max + 1)
+
+    for n in n_liste:
+        I_exacte = integration_exacte(a, b, p1, p2, p3, p4)
+        I_rectangles = methode_des_rectangles_basique(n, a, b, p1, p2, p3, p4)
+        convergence = I_exacte - I_rectangles
+        convergences.append(convergence)
+
+    plt.plot(n_liste, convergences)
+    plt.xlabel('Nombre de segments (n)')
+    plt.ylabel('Convergence (Intégrale exacte - Intégrale méthode des rectangles)')
+    plt.title('Convergence de l\'intégrale en fonction du nombre de segments')
+    plt.grid()
+    plt.show()
+
+def tracer_Integrales_segment(I_exacte,n, a, b, p1, p2, p3, p4):
+    # Affichage des courbes et des valeurs de convergences à n = 15, 100 et 500
+
+    Tab_I_calcul = np.zeros((500))
+    for n in range(1, 501):
+        I_calcul_numpy = round(methode_des_rectangles_basique(n, a, b, p1, p2, p3, p4), 5)
+        Tab_I_calcul[n - 1] = I_calcul_numpy
+        if n == 15 or n == 50 or n == 500:
+            erreur_integration_numpy = erreur_integration_num(I_exacte, I_calcul_numpy)
+            erreur_integration_prct_numpy = round(erreur_integration_numpy * 100, 5)
+            print(
+                f"L'erreur d'intégration (pour n={n}) est de {erreur_integration_numpy} soit environ {erreur_integration_prct_numpy}%\n")
+
+    '''#Premier plot de 1 à 500 (on voit pas grand chose)    
+        plt.plot(np.linspace(1,500,500),Tab_I_calcul,color='red',label='Intégrale calculée avec la méthode des rectangles')
+        plt.plot(np.linspace(1,500,500),np.ones(500)*I_exacte,color='blue',label='Intégrale exacte')
+        plt.xlabel('Nombre de segment sur l\'intervalle d\'intégration')
+        plt.ylabel('Valeur de l\'intégrale')
+        plt.legend()
+        plt.grid()
+        plt.show()'''
+
+    # Second plot de 15 à 100 (On voit la convergence)
+    plt.plot(np.linspace(15, 100, 85), Tab_I_calcul[14:99], color='red',
+             label='Intégrale calculée avec la méthode des rectangles')
+    plt.plot(np.linspace(15, 100, 75), np.ones(75) * I_exacte, color='blue', label='Intégrale exacte')
+    plt.xlabel('Nombre de segment sur l\'intervalle d\'intégration')
+    plt.ylabel('Valeur de l\'intégrale')
+    plt.title(
+        'Valeur de l\'intégrale de la fonction en fonction du nombre de segments en utilisant la méthode des rectangles centrés')
+    plt.legend()
+    plt.grid()
+    plt.show()
+
+def tracer_erreur_num_segments(n, a, b, p1, p2, p3, p4):
+    segments_base = []
+    segments_numpy = []
+    erreurs_base = []
+    erreurs_numpy = []
+
+    for i in range(1, n + 1, 10):  # Espacer les mesures par pas de 10
+        segments_base.append(i)
+        segments_numpy.append(i)  # Add this line to populate segments_numpy
+        erreur_integration_numpy, erreur_integration_base = Erreur_integration_type(i, a, b, p1, p2, p3, p4)
+        erreurs_base.append(erreur_integration_base)
+        erreurs_numpy.append(erreur_integration_numpy)
+    print(erreurs_base)
+    print(erreurs_numpy)
+
+    plt.plot(segments_base, erreurs_base, label='Méthode des rectangles (classique)')
+    plt.plot(segments_numpy, erreurs_numpy, label='Méthode des rectangles (avec numpy)')
+    plt.xlabel('Nombre de segments (n)')
+    plt.ylabel('Erreur numérique')
+    plt.title("Erreur numérique en fonction du nombre de segments pour les deux méthodes")
+    plt.legend()
+    plt.grid()
+    plt.show()
+
+
+
+
+def appelfonctions():
     n = 50 #Valeur pour les tests de vitesse
     #a, b, p1, p2, p3, p4 = créer_arguments()
     I_exacte = round(integration_exacte (a,b,p1,p2,p3,p4),5)
@@ -67,53 +155,20 @@ def main():
     erreur_integration_numpy = erreur_integration_num(I_exacte, I_calcul_numpy)
     erreur_integration_prct_numpy = round(erreur_integration_numpy*100,5)
     print(f"L'erreur d'intégration est de {erreur_integration_numpy} soit environ {erreur_integration_prct_numpy}%\n")
-   
-    temps_calcul_numpy = timeit('Convergence_selon_n(500,a,b,p1,p2,p3,p4,\'numpy\')',globals=globals(),number=1)
-    temps_calcul_base = timeit('Convergence_selon_n(500,a,b,p1,p2,p3,p4,\'base\')',globals=globals(),number=1)
+
+    temps_calcul_numpy = timeit('Convergence_selon_n(500,a,b,p1,p2,p3,p4,\'numpy\')', globals=globals(), number=100)
+    temps_calcul_base = timeit('Convergence_selon_n(500,a,b,p1,p2,p3,p4,\'base\')', globals=globals(), number=100)
     
     print(f'Le temps de calcul de la convergence pour n=500 en utilisant du python de base est de {temps_calcul_base} secondes')
     print(f'Le temps de calcul de la convergence pour n=500 en utilisant numpy est de {temps_calcul_numpy} secondes')
 
     print(f'Numpy est {round(temps_calcul_base/temps_calcul_numpy)} fois plus rapide\n')
-    
-    #Affichage des courbes et des valeurs de convergences à n = 15, 100 et 500
-    
-    Tab_I_calcul = np.zeros((500))
-    for n in range (1,501):
-        I_calcul_numpy = round(methode_des_rectangles_basique(n,a,b,p1,p2,p3,p4),5)
-        Tab_I_calcul[n-1]=I_calcul_numpy
-        if n == 15 or n== 50 or n==500 :
-            erreur_integration_numpy = erreur_integration_num(I_exacte, I_calcul_numpy)
-            erreur_integration_prct_numpy = round(erreur_integration_numpy*100,5)
-            print(f"L'erreur d'intégration (pour n={n}) est de {erreur_integration_numpy} soit environ {erreur_integration_prct_numpy}%\n")
-            
-        
-    '''#Premier plot de 1 à 500 (on voit pas grand chose)    
-    plt.plot(np.linspace(1,500,500),Tab_I_calcul,color='red',label='Intégrale calculée avec la méthode des rectangles')
-    plt.plot(np.linspace(1,500,500),np.ones(500)*I_exacte,color='blue',label='Intégrale exacte')
-    plt.xlabel('Nombre de segment sur l\'intervalle d\'intégration')
-    plt.ylabel('Valeur de l\'intégrale')
-    plt.legend()
-    plt.grid()
-    plt.show()'''
-    
-    #Second plot de 15 à 100 (On voit la convergence)
-    plt.plot(np.linspace(15,100,85),Tab_I_calcul[14:99],color='red',label='Intégrale calculée avec la méthode des rectangles')
-    plt.plot(np.linspace(15,100,75),np.ones(75)*I_exacte,color='blue',label='Intégrale exacte')
-    plt.xlabel('Nombre de segment sur l\'intervalle d\'intégration')
-    plt.ylabel('Valeur de l\'intégrale')
-    plt.title('Valeur de l\'intégrale de la fonction en fonction du nombre de segments en utilisant la méthode des rectangles centrés')
-    plt.legend()
-    plt.grid()
-    plt.show()
-    
-        
-        
 
+    tracer_Integrales_segment(I_exacte, 500, a, b, p1, p2, p3, p4)
 
+    tracer_convergence(70, a, b, p1, p2, p3, p4)
 
-
-
+    tracer_erreur_num_segments(20, a, b, p1, p2, p3, p4)
 
 p1=5
 p2=2
@@ -129,7 +184,7 @@ b = 3
 #print(timeit('Convergence_selon_n(500,p1,p2,p3,p4)',globals=globals(),number=1))
 
 
-main()
+appelfonctions()
 
 
 
