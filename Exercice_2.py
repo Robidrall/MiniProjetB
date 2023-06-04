@@ -160,7 +160,6 @@ def Main() :
     plt.show()
     
     #Affichage du graphique de l'évolution des normes L2 et Linfini
-    
     fig, axs = plt.subplots(1, 2, figsize=(10, 4))
     axs[0].plot(np.linspace(1,ITERATION,ITERATION-1), Norme_L2[1:], color='red',label='Norme L2')
     axs[0].set_xlabel('Temps')
@@ -173,7 +172,7 @@ def Main() :
     plt.show()
          
        
-#Paramètre 
+#Paramètre
 dim_x = 20
 dim_y = dim_x 
 temp_init = 25
