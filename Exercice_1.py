@@ -10,27 +10,22 @@ def créer_arguments():
     p2 = input(int("Entrez le coefficient p2 du polynôme: "))
     p3 = input(int("Entrez le coefficient p3 du polynôme: "))
     p4 = input(int("Entrez le coefficient p4 du polynôme: "))
-    n = input(int("Entrez le nombre de segments voulu pour la précision: "))
+    n = input(int("Entrez le nombre de segments voulu pour la précision (nombre positif): "))
     return a, b, p1, p2, p3, p4, n
 
+#Cette fonction représente le calcul de l'intégrale exacte
 def integration_exacte (a,b,p1,p2,p3,p4):
     I_exacte = p1*(b-a)+p2*(b**2-a**2)/2 +p3*(b**3-a**3)/3 + p4*(b**4-a**4)/4
     return I_exacte
-       
+
+#Cette fonction permet de représenter la fonction polynomiale d'ordre 3
 def fonction(x,p1,p2,p3,p4):
     return p1 + p2*x +p3*x**2 + p4*x**3
 
+# L'erreur est la soustraction de la valeure exacte - la valeur calculée
 def erreur_integration_num (valeur_exacte, valeur_calcule):
     erreur = abs(valeur_exacte-valeur_calcule)
     return erreur
-
-def Convergence_selon_n (n,a,b,p1,p2,p3,p4,type):
-    if type == 'base' : 
-        return round(100*erreur_integration_num(integration_exacte(-2,3,p1,p2,p3,p4),methode_des_rectangles_basique(n,a,b,p1,p2,p3,p4))/integration_exacte (a,b,p1,p2,p3,p4),5)
-    elif type == 'numpy' : 
-        return round(100*erreur_integration_num(integration_exacte(-2,3,p1,p2,p3,p4),methode_des_rectangles_numpy(n,a,b,p1,p2,p3,p4))/integration_exacte (-2,3,p1,p2,p3,p4),5)
-    else : 
-        print("Le type saisi doit être 'base' ou 'numpy'")
     
 #Méthode des rectangles utilisant du python de base
 def methode_des_rectangles_basique(n,a,b,p1,p2,p3,p4):
@@ -49,6 +44,15 @@ def methode_des_rectangles_numpy(n,a,b,p1,p2,p3,p4):
     ordonnee_centre_rectangle = fonction(abscisse_centre_rectangle,p1,p2,p3,p4)
     aire_totale = np.sum(ordonnee_centre_rectangle*(b-a)/n)
     return aire_totale
+
+#Cette fonction permet de définir la convergence en fonction du nombre de segments pour chaque méthode
+def Convergence_selon_n (n,a,b,p1,p2,p3,p4,type):
+    if type == 'base' :
+        return round(100*erreur_integration_num(integration_exacte(a,b,p1,p2,p3,p4),methode_des_rectangles_basique(n,a,b,p1,p2,p3,p4))/integration_exacte (a,b,p1,p2,p3,p4),5)
+    elif type == 'numpy' :
+        return round(100*erreur_integration_num(integration_exacte(a,b,p1,p2,p3,p4),methode_des_rectangles_numpy(n,a,b,p1,p2,p3,p4))/integration_exacte (a,b,p1,p2,p3,p4),5)
+    else :
+        print("Le type saisi doit être 'base' ou 'numpy'")
 
 def Erreur_integration_type(n,a,b,p1,p2,p3,p4):
         I_calcul_base = methode_des_rectangles_basique(n, a, b, p1, p2, p3, p4)
@@ -121,21 +125,28 @@ def tracer_Integrales_segment(I_exacte,n, a, b, p1, p2, p3, p4):
     plt.legend()
     plt.grid()
     plt.show()
-def tracer_erreur_num_segments(n_max, a, b, p1, p2, p3, p4):
+def tracer_erreur_num_segments(erreur_integration_base, erreur_integration_numpy, n_max, a, b, p1, p2, p3, p4):
+    temps_base = []
+    temps_numpy = []
     erreurs_base = []
     erreurs_numpy = []
     n_liste = range(1, n_max + 1)
 
     for n in n_liste:
-        erreur_numpy, erreur_base = Erreur_integration_type(n, a, b, p1, p2, p3, p4)
-        erreurs_base.append(erreur_base)
-        erreurs_numpy.append(erreur_numpy)
+        # Mesurer le temps d'exécution pour la méthode de base
+        temps_base.append(timeit(lambda: erreur_integration_base, number=1))
 
-    plt.plot(n_liste, erreurs_base, label='Base')
-    plt.plot(n_liste, erreurs_numpy, label='Numpy')
-    plt.xlabel('Nombre de segments (n)')
+        # Mesurer le temps d'exécution pour la méthode numpy
+        temps_numpy.append(timeit(lambda: erreur_integration_numpy, number=1))
+
+        erreurs_base.append(erreur_integration_base(n, a, b, p1, p2, p3, p4))
+        erreurs_numpy.append(erreur_integration_numpy(n, a, b, p1, p2, p3, p4))
+
+    plt.plot(temps_base, erreurs_base, label='Base')
+    plt.plot(temps_numpy, erreurs_numpy, label='Numpy')
+    plt.xlabel('Temps de calcul (s)')
     plt.ylabel('Erreur d\'intégration')
-    plt.title('Erreur d\'intégration en fonction du nombre de segments')
+    plt.title('Erreur d\'intégration en fonction du temps de calcul')
     plt.legend()
     plt.grid()
     plt.show()

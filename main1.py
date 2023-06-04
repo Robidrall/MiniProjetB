@@ -46,5 +46,7 @@ ex1.tracer_Integrales_segment(I_exacte, 500, a, b, p1, p2, p3, p4)
 #Cette fonction trace la convergence en fonction du nombre de segments
 ex1.tracer_convergence(70, a, b, p1, p2, p3, p4)
 
-#Cette fonction trace l'erreur en fonction du nombre de segments
-ex1.tracer_erreur_num_segments(20, a, b, p1, p2, p3, p4)
+#Cette fonction trace l'erreur en fonction du nombre de segments (A MODIFIER)
+"""erreur_integration_numpy, erreur_integration_base = ex1.Erreur_integration_type(n,a,b,p1,p2,p3,p4)
+ex1.tracer_erreur_num_segments(erreur_integration_base, erreur_integration_numpy,20, a, b, p1, p2, p3, p4)
+"""
