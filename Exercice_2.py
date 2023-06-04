@@ -14,22 +14,37 @@ import time
 F0 = 0.25 
 
 K = 5 #diffusivité
+diffusivite = K
 ITERATION = 1000
 
-'''#INTERFACE UTILISATEUR
-dim_x = input("Entrez la dimension x de la plaque")
-dim_y = input("Entrez la dimension y de la plaque")
+#Paramètre
+dim_x = 20
+dim_y = dim_x
+temp_init = 25
+temp_cond_isotherme = 25
+x_c = 4
+y_c = 7
+n_x = 100
+n_y = n_x
+
+amplitude_point_chaud = 90
+ecart_type_point_chaud = 0.9
+delta_x = dim_x/n_x
+delta_y = dim_y/n_y
+
+#INTERFACE UTILISATEUR
+dim_x = input("Entrez la dimension x de la plaque : ")
+dim_y = input("Entrez la dimension y de la plaque : ")
 temp_init = input("Entrez la température initiale: ")  
 temp_cond_isotherme = input("Entrez la température de condition isotherme en bout de plaque: ")  
 x_c = input("Entrez la position x_c du point chaud: ")
 y_c = input("Entrez la position y_c du point chaud: ")
 n_x = input("Entrez le nombre de point dans la direction x: ")
 n_y = input("Entrez le nombre de point dans la direction y: ")
-diffusivite = input("Entrez le diffusivité du matériau: ")
 amplitude_point_chaud = input("Entrez l'amplitude du point chaud: ")
 ecart_type_point_chaud = input("Entrez l'écart-type lié au point chaud: ")
 ITERATION = input("Entrez le nombre d'itérations désiré: ")
-'''
+
 
 def Calcul_T(x0,y0,X,Y) : 
     '''
@@ -106,20 +121,9 @@ def Calcul_Résidu(T_Precedent,T_Actuel):
     '''
     return (T_Actuel - T_Precedent)/T_Actuel
     
-def Main() : 
-    '''
-    Cette fonction est la fonction principale du programme, elle synchronise les autres fonctions et affiche les graphes d'analyse
-    '''
-    #Création de la grille 
-    print("Création de la grille")
-    X,Y=Creation_grille()
-    #Affichage des conditions initiales
-    print("Affichage des conditions initiales")     
-    T_init = Solution_initiale(X,Y)
 
-    #Calcul du pas temporel
-    dt = (F0*delta_x**2)/K 
-    
+
+def calcul_temp(T_init, diffusivite, dt):
     #Initialisation des tableaux de températures et de normes pour le tracé des courbes    
     Temperature_max = np.array(np.amax(T_init))
     Temperature_min = np.array(np.amin(T_init))
@@ -147,49 +151,35 @@ def Main() :
         
         #La nouvelle valeur devient la valeur initiale pour la prochaine itération
         T_init=T_suivant
-    
+    return Temperature_max, Temperature_min, Temperature_moy, Norme_Infini, Norme_L2
+
+def tracer_temperature(Tmax, Tmin, Tmoy):
     #Affichage du graphique de l'évolution des températures minimale, maximale et moyenne    
-    plt.plot(np.linspace(0,ITERATION,ITERATION), Temperature_max, color='red',label='Temperature max')
-    plt.plot(np.linspace(0,ITERATION,ITERATION), Temperature_min, color='blue',label='Temperature min')
-    plt.plot(np.linspace(0,ITERATION,ITERATION), Temperature_moy, color='green',label='Temperature moyenne')
+    plt.plot(np.linspace(0,ITERATION,ITERATION), Tmax, color='red',label='Temperature max')
+    plt.plot(np.linspace(0,ITERATION,ITERATION), Tmin, color='blue',label='Temperature min')
+    plt.plot(np.linspace(0,ITERATION,ITERATION), Tmoy, color='green',label='Temperature moyenne')
     plt.xlabel('Temps')
     plt.ylabel('Température')
     plt.title('Valeur de température (moyenne, minimale et maximale) en fonction du temps')
     plt.legend()
     plt.grid()
     plt.show()
-    
+
+def tracer_norme(L2,Inf):
     #Affichage du graphique de l'évolution des normes L2 et Linfini
     fig, axs = plt.subplots(1, 2, figsize=(10, 4))
-    axs[0].plot(np.linspace(1,ITERATION,ITERATION-1), Norme_L2[1:], color='red',label='Norme L2')
+    axs[0].plot(np.linspace(1,ITERATION,ITERATION-1), L2[1:], color='red',label='Norme L2')
     axs[0].set_xlabel('Temps')
     axs[0].set_ylabel('Norme L2')    
-    axs[1].plot(np.linspace(1,ITERATION,ITERATION-1), Norme_Infini[1:], color='blue',label='Norme Linfini')
+    axs[1].plot(np.linspace(1,ITERATION,ITERATION-1), Inf[1:], color='blue',label='Norme Linfini')
     axs[1].set_xlabel('Temps')
     axs[1].set_ylabel('Norme Linfini')
     plt.title('Valeur des normes L2 et Linfini pour étudier la convergence du champs de température',loc='right')
     plt.grid()
     plt.show()
-         
-       
-#Paramètre
-dim_x = 20
-dim_y = dim_x 
-temp_init = 25
-temp_cond_isotherme = 25
-x_c = 4
-y_c = 7
-n_x = 100
-n_y = n_x
-diffusivite = K
-amplitude_point_chaud = 90
-ecart_type_point_chaud = 0.9
-delta_x = dim_x/n_x
-delta_y = dim_y/n_y
 
 
-temps_debut = time.perf_counter()
-Main()
-temps_fin = time.perf_counter()
 
-print(f"Temps de compilation :{temps_fin - temps_debut} secondes")
+
+
+
