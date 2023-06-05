@@ -48,9 +48,11 @@ def methode_des_rectangles_numpy(n,a,b,p1,p2,p3,p4):
 #Cette fonction permet de définir la convergence en fonction du nombre de segments pour chaque méthode
 def Convergence_selon_n (n,a,b,p1,p2,p3,p4,type):
     if type == 'base' :
-        return round(100*erreur_integration_num(integration_exacte(a,b,p1,p2,p3,p4),methode_des_rectangles_basique(n,a,b,p1,p2,p3,p4))/integration_exacte (a,b,p1,p2,p3,p4),5)
+        convergence_base = round(100*erreur_integration_num(integration_exacte(a,b,p1,p2,p3,p4),methode_des_rectangles_basique(n,a,b,p1,p2,p3,p4))/integration_exacte (a,b,p1,p2,p3,p4),5)
+        return convergence_base
     elif type == 'numpy' :
-        return round(100*erreur_integration_num(integration_exacte(a,b,p1,p2,p3,p4),methode_des_rectangles_numpy(n,a,b,p1,p2,p3,p4))/integration_exacte (a,b,p1,p2,p3,p4),5)
+        convergence_numpy = round(100*erreur_integration_num(integration_exacte(a,b,p1,p2,p3,p4),methode_des_rectangles_numpy(n,a,b,p1,p2,p3,p4))/integration_exacte (a,b,p1,p2,p3,p4),5)
+        return convergence_numpy
     else :
         print("Le type saisi doit être 'base' ou 'numpy'")
 
@@ -128,17 +130,21 @@ def tracer_Integrales_segment(I_exacte,n, a, b, p1, p2, p3, p4):
     plt.show()"""
 
 def tracer_temps_execution_segments(n, a, b, p1, p2, p3, p4):
+    #On sépare le temps en deux tableaux, un pour la méthode de base et pour numpy
     temps_base = []
     temps_numpy = []
     n_liste = range(1, n + 1)
 
     for n in n_liste:
-        # Mesurer le temps d'exécution pour la méthode de base
+        # Mesurer le temps d'exécution pour la méthode avec du python de base
+        # La fonction lambda est utilisée pour réaliser l'appel à la méthode des rectangles avec les arguments.
+        # Elle créée une fonction anonyme qui représente le code que l'on souhaite mesurer avec le temps d'exécution.
         temps_base.append(timeit(lambda: methode_des_rectangles_basique(n, a, b, p1, p2, p3, p4), number=1))
 
         # Mesurer le temps d'exécution pour la méthode numpy
         temps_numpy.append(timeit(lambda: methode_des_rectangles_numpy(n, a, b, p1, p2, p3, p4), number=1))
 
+    #Procédure pour tracer le temps d'exécution en fonction de n
     plt.plot(n_liste, temps_base, color='red', label='Base')
     plt.plot(n_liste, temps_numpy, color='green', label='Numpy')
     plt.xlabel('Nombre de segments (n)')
