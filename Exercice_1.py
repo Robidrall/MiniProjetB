@@ -117,36 +117,33 @@ def tracer_Integrales_segment(I_exacte,n, a, b, p1, p2, p3, p4):
     plt.grid()
     plt.show()
 
-    plt.plot(np.linspace(15, 100, 85), Tab_I_calcul_numpy[14:99], color='green',label='Intégrale calculée avec la méthode des rectangles numpy')
+    #Meme principe pour la méthode avec Numpy qui a la meme précision, nous la laissons en commentaire car le tracé est le meme.
+    """plt.plot(np.linspace(15, 100, 85), Tab_I_calcul_numpy[14:99], color='green',label='Intégrale calculée avec la méthode des rectangles numpy')
     plt.plot(np.linspace(15, 100, 75), np.ones(75) * I_exacte, color='blue', label='Intégrale exacte')
     plt.xlabel('Nombre de segment sur l\'intervalle d\'intégration')
     plt.ylabel('Valeur de l\'intégrale')
     plt.title('Valeur de l\'intégrale de la fonction en fonction du nombre de segments en utilisant la méthode des rectangles centrés (numpy)')
     plt.legend()
     plt.grid()
-    plt.show()
-def tracer_erreur_num_segments(erreur_integration_base, erreur_integration_numpy, n_max, a, b, p1, p2, p3, p4):
+    plt.show()"""
+
+def tracer_temps_execution_segments(n, a, b, p1, p2, p3, p4):
     temps_base = []
     temps_numpy = []
-    erreurs_base = []
-    erreurs_numpy = []
-    n_liste = range(1, n_max + 1)
+    n_liste = range(1, n + 1)
 
     for n in n_liste:
         # Mesurer le temps d'exécution pour la méthode de base
-        temps_base.append(timeit(lambda: erreur_integration_base, number=1))
+        temps_base.append(timeit(lambda: methode_des_rectangles_basique(n, a, b, p1, p2, p3, p4), number=1))
 
         # Mesurer le temps d'exécution pour la méthode numpy
-        temps_numpy.append(timeit(lambda: erreur_integration_numpy, number=1))
+        temps_numpy.append(timeit(lambda: methode_des_rectangles_numpy(n, a, b, p1, p2, p3, p4), number=1))
 
-        erreurs_base.append(erreur_integration_base(n, a, b, p1, p2, p3, p4))
-        erreurs_numpy.append(erreur_integration_numpy(n, a, b, p1, p2, p3, p4))
-
-    plt.plot(temps_base, erreurs_base, label='Base')
-    plt.plot(temps_numpy, erreurs_numpy, label='Numpy')
-    plt.xlabel('Temps de calcul (s)')
-    plt.ylabel('Erreur d\'intégration')
-    plt.title('Erreur d\'intégration en fonction du temps de calcul')
+    plt.plot(n_liste, temps_base, color='red', label='Base')
+    plt.plot(n_liste, temps_numpy, color='green', label='Numpy')
+    plt.xlabel('Nombre de segments (n)')
+    plt.ylabel("Temps d'exécution (s)")
+    plt.title("Temps d'exécution en fonction du nombre de segments")
     plt.legend()
     plt.grid()
     plt.show()
