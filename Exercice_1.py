@@ -56,17 +56,6 @@ def Convergence_selon_n (n,a,b,p1,p2,p3,p4,type):
     else :
         print("Le type saisi doit être 'base' ou 'numpy'")
 
-def Erreur_integration_type(n,a,b,p1,p2,p3,p4):
-        I_calcul_base = methode_des_rectangles_basique(n, a, b, p1, p2, p3, p4)
-        I_exacte = integration_exacte(a, b, p1, p2, p3, p4)
-        erreur_integration_base = erreur_integration_num(I_exacte, I_calcul_base)
-
-        I_calcul_numpy = methode_des_rectangles_numpy(n, a, b, p1, p2, p3, p4)
-        I_exacte = integration_exacte(a, b, p1, p2, p3, p4)
-        erreur_integration_numpy = erreur_integration_num(I_exacte, I_calcul_numpy)
-
-        return erreur_integration_numpy, erreur_integration_base
-
 def tracer_convergence(n_max, a, b, p1, p2, p3, p4):
     convergences = []
     n_liste = range(1, n_max + 1)
@@ -137,8 +126,7 @@ def tracer_temps_execution_segments(n, a, b, p1, p2, p3, p4):
 
     for n in n_liste:
         # Mesurer le temps d'exécution pour la méthode avec du python de base
-        # La fonction lambda est utilisée pour réaliser l'appel à la méthode des rectangles avec les arguments.
-        # Elle créée une fonction anonyme qui représente le code que l'on souhaite mesurer avec le temps d'exécution.
+        # La fonction lambda sert ici a mettre les fonctions appelées en argument.
         temps_base.append(timeit(lambda: methode_des_rectangles_basique(n, a, b, p1, p2, p3, p4), number=1))
 
         # Mesurer le temps d'exécution pour la méthode numpy
