@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from timeit import timeit
-import time
 
 def créer_arguments():
     a = input(int("Entrez la borne inférieur de l'intervalle: "))
@@ -56,26 +55,30 @@ def Convergence_selon_n (n,a,b,p1,p2,p3,p4,type):
     else :
         print("Le type saisi doit être 'base' ou 'numpy'")
 
-def tracer_convergence(n_max, a, b, p1, p2, p3, p4):
+#Cette fonction sert à tracer la convergence (Iexacte-Icalculée) en fonction du nombre de segments
+def tracer_convergence(n, a, b, p1, p2, p3, p4):
+    #On crée un tableau qui ajoutera les valeurs de convergences de 1 à n
     convergences = []
-    n_liste = range(1, n_max + 1)
+    n_liste = range(1, n + 1)
 
+    #Nous avons réalisé la convergence pour la méthode avec du python de base
     for n in n_liste:
         I_exacte = integration_exacte(a, b, p1, p2, p3, p4)
         I_rectangles = methode_des_rectangles_basique(n, a, b, p1, p2, p3, p4)
         convergence = I_exacte - I_rectangles
+        # A chaque valeur de n, on met la valeur de convergence associée dans le tableau
         convergences.append(convergence)
 
+    #On trace la convergence en fonction du nombre de segments
     plt.plot(n_liste, convergences)
-    plt.xlabel('Nombre de segments (n)')
-    plt.ylabel('Convergence (Intégrale exacte - Intégrale méthode des rectangles)')
-    plt.title('Convergence de l\'intégrale en fonction du nombre de segments')
+    plt.xlabel("Nombre de segments (n)")
+    plt.ylabel("Convergence (Intégrale exacte - Intégrale calculée)")
+    plt.title("Convergence de l'intégrale en fonction du nombre de segments")
     plt.grid()
     plt.show()
 
 def tracer_Integrales_segment(I_exacte,n, a, b, p1, p2, p3, p4):
     # Affichage des courbes et des valeurs de convergences à n = 15, 100 et 500
-
     Tab_I_calcul_base = np.zeros((500))
     Tab_I_calcul_numpy = np.zeros((500))
     for n in range(1, 501):
@@ -124,6 +127,7 @@ def tracer_temps_execution_segments(n, a, b, p1, p2, p3, p4):
     temps_numpy = []
     n_liste = range(1, n + 1)
 
+    #n représente le nombre de segments
     for n in n_liste:
         # Mesurer le temps d'exécution pour la méthode avec du python de base
         # La fonction lambda sert ici a mettre les fonctions appelées en argument.
