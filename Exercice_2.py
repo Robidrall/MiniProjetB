@@ -155,12 +155,12 @@ def calcul_temp(T_init, diffusivite, dt):
 
 def tracer_temperature(Tmax, Tmin, Tmoy):
     #Affichage du graphique de l'évolution des températures minimale, maximale et moyenne en fonction du temps
-    plt.plot(np.linspace(0, ITERATION, ITERATION), Tmax, color='red',label='Temperature max')
-    plt.plot(np.linspace(0, ITERATION, ITERATION), Tmin, color='blue',label='Temperature min')
-    plt.plot(np.linspace(0, ITERATION, ITERATION), Tmoy, color='green',label='Temperature moyenne')
-    plt.xlabel('Temps')
+    plt.plot(np.linspace(0, ITERATION, ITERATION), Tmax, color='red', label='Temperature maximale')
+    plt.plot(np.linspace(0, ITERATION, ITERATION), Tmin, color='blue', label='Temperature minimale')
+    plt.plot(np.linspace(0, ITERATION, ITERATION), Tmoy, color='green', label='Temperature moyenne')
+    plt.xlabel('Temps (s)')
     plt.ylabel('Température')
-    plt.title('Valeur de température (moyenne, minimale et maximale) en fonction du temps')
+    plt.title('Valeur de la température en fonction du temps')
     plt.legend()
     plt.grid()
     plt.show()
