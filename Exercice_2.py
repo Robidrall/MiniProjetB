@@ -1,5 +1,5 @@
 '''
-Mini Projet B 
+Mini Projet B - Équation de la chaleur
 MGA802 
 CHAMBAZ-ROBILLARD
 '''
@@ -12,7 +12,6 @@ import time
 
 #CONSTANTES
 F0 = 0.25 
-
 K = 5 #diffusivité
 diffusivite = K
 ITERATION = 1000
@@ -26,13 +25,13 @@ x_c = 4
 y_c = 7
 n_x = 100
 n_y = n_x
-
 amplitude_point_chaud = 90
 ecart_type_point_chaud = 0.9
 delta_x = dim_x/n_x
 delta_y = dim_y/n_y
 
-""""#INTERFACE UTILISATEUR
+#Pour utiliser l'interface utilisateur, il suffit de décommenter la partie suivante et de supprimer la partie précédente (seulement les doublons)
+""""#INTERFACE UTILISATEUR  
 dim_x = input("Entrez la dimension x de la plaque : ")
 dim_y = input("Entrez la dimension y de la plaque : ")
 temp_init = input("Entrez la température initiale: ")  
