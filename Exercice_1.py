@@ -2,14 +2,26 @@ import numpy as np
 import matplotlib.pyplot as plt
 from timeit import timeit
 
+#Nous laissons le choix à l'utilisateur de choisir ses valeurs pour les coefficients.
+#Sinon nous mettons les variables de test.
 def créer_arguments():
-    a = input(int("Entrez la borne inférieur de l'intervalle: "))
-    b = input(int("Entrez la borne supérieure de l'intervalle: "))
-    p1 = input(int("Entrez le coefficient p1 du polynôme: "))
-    p2 = input(int("Entrez le coefficient p2 du polynôme: "))
-    p3 = input(int("Entrez le coefficient p3 du polynôme: "))
-    p4 = input(int("Entrez le coefficient p4 du polynôme: "))
-    n = input(int("Entrez le nombre de segments voulu pour la précision (nombre positif): "))
+    entree = input("Voulez vous défnir vos propres coefficents (oui ou non)\nDans le cas contraires des coefficients de base seront affectés : ")
+    if entree == 'oui':
+        a = int(input("Entrez la borne inférieur de l'intervalle: "))
+        b = int(input("Entrez la borne supérieure de l'intervalle: "))
+        p1 = int(input("Entrez le coefficient p1 du polynôme: "))
+        p2 = int(input("Entrez le coefficient p2 du polynôme: "))
+        p3 = int(input("Entrez le coefficient p3 du polynôme: "))
+        p4 = int(input("Entrez le coefficient p4 du polynôme: "))
+        n = int(input("Entrez le nombre de segments voulu pour la précision (nombre positif): "))
+    elif entree =='non':
+        p1 = 5
+        p2 = 2
+        p3 = 4
+        p4 = 2
+        a = -2
+        b = 3
+        n = 70
     return a, b, p1, p2, p3, p4, n
 
 #Cette fonction représente le calcul de l'intégrale exacte

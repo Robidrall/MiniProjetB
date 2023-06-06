@@ -3,16 +3,10 @@ import Exercice_1 as ex1
 from timeit import timeit
 
 #Valeurs de test
-p1 = 5
-p2 = 2
-p3 = 4
-p4 = 2
-a = -2
-b = 3
-n = 50
+
 
 #Interface utilisateur qui choisit ses coefficients
-#a, b, p1, p2, p3, p4 = ex1.créer_arguments()
+a, b, p1, p2, p3, p4, n = ex1.créer_arguments()
 
 #Le calcul de l'intégrale exact
 I_exacte = round(ex1.integration_exacte(a, b, p1, p2, p3, p4), 5)
