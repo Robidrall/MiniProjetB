@@ -9,7 +9,7 @@ import time as time
 
 #CONSTANTES en appelant le module
 F0 = ex2.F0
-K = ex2.K
+K = ex2.diffusivite
 ITERATION = ex2.ITERATION
 
 def Main():
@@ -33,7 +33,7 @@ def Main():
     ex2.tracer_norme(Norme_L2, Norme_Infini)
 
 
-
+# Corps du programme avec chronométrage du temps d'exécution
 temps_debut = time.perf_counter()
 Main()
 temps_fin = time.perf_counter()

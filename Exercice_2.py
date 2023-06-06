@@ -10,12 +10,11 @@ import matplotlib.pyplot as plt
 
 #CONSTANTES
 F0 = 0.25
-K = 5 #diffusivité
-diffusivite = K
+diffusivite = 5
 
 #INTERFACE UTILISATEUR
 def créer_arguments():
-    entree = input("Voulez vous défnir vos propres coefficents (oui ou non)\nDans le cas contraires des coefficients de base seront affectés : ")
+    entree = input("Voulez vous définir vos propres coefficients (oui ou non)?\nDans le cas contraires des coefficients de base seront affectés : ")
     if entree == 'oui':
         dim_x = int(input("Entrez la dimension x de la plaque : "))
         dim_y = int(input("Entrez la dimension y de la plaque : "))
@@ -31,14 +30,14 @@ def créer_arguments():
     elif entree =='non':
         dim_x = 20
         dim_y = dim_x
-        temp_init = 298
-        temp_cond_isotherme = 273
-        x_c = 10
-        y_c = 15
+        temp_init = 25
+        temp_cond_isotherme = 25
+        x_c = 4
+        y_c = 7
         n_x = 100
         n_y = n_x
         ITERATION = 100
-        amplitude_point_chaud = 350
+        amplitude_point_chaud = 90
         ecart_type_point_chaud = 0.9
     return dim_x, dim_y, temp_init, temp_cond_isotherme, x_c, y_c, n_x, n_y, amplitude_point_chaud, ecart_type_point_chaud, ITERATION
 
@@ -70,7 +69,6 @@ def Application_Condition_Limite(T,temp_cond_isotherme):
     T[:,0] = temp_cond_isotherme
     T[0,:] = temp_cond_isotherme
     T[-1,:] = temp_cond_isotherme
-    print(T)
     return T
 
 def Solution_initiale (X,Y) : 

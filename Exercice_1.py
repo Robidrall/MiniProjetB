@@ -11,7 +11,7 @@ from timeit import timeit
 #Nous laissons le choix à l'utilisateur de choisir ses valeurs pour les coefficients.
 #Sinon nous mettons les variables de test.
 def créer_arguments():
-    entree = input("Voulez vous défnir vos propres coefficents (oui ou non)\nDans le cas contraires des coefficients de base seront affectés : ")
+    entree = input("Voulez vous définir vos propres coefficients (oui ou non)?\nDans le cas contraires des coefficients de base seront affectés : ")
     if entree == 'oui':
         a = int(input("Entrez la borne inférieur de l'intervalle: "))
         b = int(input("Entrez la borne supérieure de l'intervalle: "))
