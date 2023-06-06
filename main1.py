@@ -1,9 +1,12 @@
+'''
+Mini Projet B - Intégration numérique
+MGA802 
+CHAMBAZ-ROBILLARD
+'''
+
 #On importe le module Exercice_1 ou toutes les fonctions sont présentes
 import Exercice_1 as ex1
 from timeit import timeit
-
-#Valeurs de test
-
 
 #Interface utilisateur qui choisit ses coefficients
 a, b, p1, p2, p3, p4, n = ex1.créer_arguments()
