@@ -6,44 +6,53 @@ CHAMBAZ-ROBILLARD
 
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy import linalg
-import time
 
 
 #CONSTANTES
-F0 = 0.25 
-
+F0 = 0.25
 K = 5 #diffusivité
 diffusivite = K
-ITERATION = 1000
+
+
+
 
 #Paramètre
-dim_x = 20
-dim_y = dim_x
-temp_init = 25
-temp_cond_isotherme = 25
-x_c = 4
-y_c = 7
-n_x = 100
-n_y = n_x
 
-amplitude_point_chaud = 90
-ecart_type_point_chaud = 0.9
-delta_x = dim_x/n_x
-delta_y = dim_y/n_y
 
-""""#INTERFACE UTILISATEUR
-dim_x = input("Entrez la dimension x de la plaque : ")
-dim_y = input("Entrez la dimension y de la plaque : ")
-temp_init = input("Entrez la température initiale: ")  
-temp_cond_isotherme = input("Entrez la température de condition isotherme en bout de plaque: ")  
-x_c = input("Entrez la position x_c du point chaud: ")
-y_c = input("Entrez la position y_c du point chaud: ")
-n_x = input("Entrez le nombre de point dans la direction x: ")
-n_y = input("Entrez le nombre de point dans la direction y: ")
-amplitude_point_chaud = input("Entrez l'amplitude du point chaud: ")
-ecart_type_point_chaud = input("Entrez l'écart-type lié au point chaud: ")
-ITERATION = input("Entrez le nombre d'itérations désiré: ")"""
+#INTERFACE UTILISATEUR
+def créer_arguments():
+    entree = input("Voulez vous défnir vos propres coefficents (oui ou non)\nDans le cas contraires des coefficients de base seront affectés : ")
+    if entree == 'oui':
+        dim_x = input("Entrez la dimension x de la plaque : ")
+        dim_y = input("Entrez la dimension y de la plaque : ")
+        temp_init = input("Entrez la température initiale: ")
+        temp_cond_isotherme = input("Entrez la température de condition isotherme en bout de plaque: ")
+        x_c = input("Entrez la position x_c du point chaud: ")
+        y_c = input("Entrez la position y_c du point chaud: ")
+        n_x = input("Entrez le nombre de point dans la direction x: ")
+        n_y = input("Entrez le nombre de point dans la direction y: ")
+        amplitude_point_chaud = input("Entrez l'amplitude du point chaud: ")
+        ecart_type_point_chaud = input("Entrez l'écart-type lié au point chaud: ")
+        ITERATION = input("Entrez le nombre d'itérations désiré: ")
+        delta_x = dim_x / n_x
+        delta_y = dim_y / n_y
+    elif entree =='non':
+        dim_x = 20
+        dim_y = dim_x
+        temp_init = 25
+        temp_cond_isotherme = 25
+        x_c = 4
+        y_c = 7
+        n_x = 100
+        n_y = n_x
+        ITERATION = 1000
+        amplitude_point_chaud = 90
+        ecart_type_point_chaud = 0.9
+        delta_x = dim_x / n_x
+        delta_y = dim_y / n_y
+    return dim_x, dim_y, temp_init, temp_cond_isotherme, x_c, y_c, n_x, n_y, amplitude_point_chaud, ecart_type_point_chaud, ITERATION, delta_x, delta_y
+
+dim_x, dim_y, temp_init, temp_cond_isotherme, x_c, y_c, n_x, n_y, amplitude_point_chaud, ecart_type_point_chaud, ITERATION, delta_x, delta_y = créer_arguments()
 
 
 def Calcul_T(x0,y0,X,Y) : 
