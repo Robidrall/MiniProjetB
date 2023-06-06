@@ -1,3 +1,9 @@
+'''
+Mini Projet B - Intégration numérique
+MGA802 
+CHAMBAZ-ROBILLARD
+'''
+
 import numpy as np
 import matplotlib.pyplot as plt
 from timeit import timeit
