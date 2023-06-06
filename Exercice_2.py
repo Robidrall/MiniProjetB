@@ -1,5 +1,5 @@
 '''
-Mini Projet B 
+Mini Projet B - Equation de la Chaleur
 MGA802 
 CHAMBAZ-ROBILLARD
 '''
@@ -13,29 +13,21 @@ F0 = 0.25
 K = 5 #diffusivité
 diffusivite = K
 
-
-
-
-#Paramètre
-
-
 #INTERFACE UTILISATEUR
 def créer_arguments():
     entree = input("Voulez vous défnir vos propres coefficents (oui ou non)\nDans le cas contraires des coefficients de base seront affectés : ")
     if entree == 'oui':
-        dim_x = input("Entrez la dimension x de la plaque : ")
-        dim_y = input("Entrez la dimension y de la plaque : ")
-        temp_init = input("Entrez la température initiale: ")
-        temp_cond_isotherme = input("Entrez la température de condition isotherme en bout de plaque: ")
-        x_c = input("Entrez la position x_c du point chaud: ")
-        y_c = input("Entrez la position y_c du point chaud: ")
-        n_x = input("Entrez le nombre de point dans la direction x: ")
-        n_y = input("Entrez le nombre de point dans la direction y: ")
-        amplitude_point_chaud = input("Entrez l'amplitude du point chaud: ")
-        ecart_type_point_chaud = input("Entrez l'écart-type lié au point chaud: ")
-        ITERATION = input("Entrez le nombre d'itérations désiré: ")
-        delta_x = dim_x / n_x
-        delta_y = dim_y / n_y
+        dim_x = int(input("Entrez la dimension x de la plaque : "))
+        dim_y = int(input("Entrez la dimension y de la plaque : "))
+        temp_init = int(input("Entrez la température initiale: "))
+        temp_cond_isotherme = int(input("Entrez la température de condition isotherme en bout de plaque: "))
+        x_c = int(input("Entrez la position x_c du point chaud: "))
+        y_c = int(input("Entrez la position y_c du point chaud: "))
+        n_x = int(input("Entrez le nombre de point dans la direction x: "))
+        n_y = int(input("Entrez le nombre de point dans la direction y: "))
+        amplitude_point_chaud = int(input("Entrez l'amplitude du point chaud: "))
+        ecart_type_point_chaud = float(input("Entrez l'écart-type lié au point chaud: "))
+        ITERATION = int(input("Entrez le nombre d'itérations désiré: "))
     elif entree =='non':
         dim_x = 20
         dim_y = dim_x
@@ -48,12 +40,11 @@ def créer_arguments():
         ITERATION = 1000
         amplitude_point_chaud = 90
         ecart_type_point_chaud = 0.9
-        delta_x = dim_x / n_x
-        delta_y = dim_y / n_y
-    return dim_x, dim_y, temp_init, temp_cond_isotherme, x_c, y_c, n_x, n_y, amplitude_point_chaud, ecart_type_point_chaud, ITERATION, delta_x, delta_y
+    return dim_x, dim_y, temp_init, temp_cond_isotherme, x_c, y_c, n_x, n_y, amplitude_point_chaud, ecart_type_point_chaud, ITERATION
 
-dim_x, dim_y, temp_init, temp_cond_isotherme, x_c, y_c, n_x, n_y, amplitude_point_chaud, ecart_type_point_chaud, ITERATION, delta_x, delta_y = créer_arguments()
-
+dim_x, dim_y, temp_init, temp_cond_isotherme, x_c, y_c, n_x, n_y, amplitude_point_chaud, ecart_type_point_chaud, ITERATION = créer_arguments()
+delta_x = dim_x / n_x
+delta_y = dim_y / n_y
 
 def Calcul_T(x0,y0,X,Y) : 
     '''
@@ -108,7 +99,7 @@ def Calcul_RHS(T,diffusivite):
     '''
     #On effectue les calculs sur des matrices plus petites puis on la copie ensuite au centre d'une matrice de zeros
     #On obtient ainsi une matrice avec des zéros à l'extérieur (ce qui est nécessaire pour les conditions limites)
-    RHS_petite = diffusivite*(((T[2:,1:-1]-2*T[1:-1,1:-1]+T[:-2,1:-1])/delta_x**2)+((T[1:-1,:-2]-2*T[1:-1,1:-1]+T[1:-1,2:])/delta_y**2))
+    RHS_petite = diffusivite*(((T[2:,1:-1]-2*T[1:-1,1:-1]+T[:-2,1:-1])/(dim_x / n_x)**2)+((T[1:-1,:-2]-2*T[1:-1,1:-1]+T[1:-1,2:])/(dim_y / n_y)**2))
     RHS_grande = np.zeros((RHS_petite.shape[0]+2,RHS_petite.shape[1] + 2))
     RHS_grande[1:-1,1:-1] = RHS_petite
     return RHS_grande
