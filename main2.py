@@ -1,3 +1,9 @@
+'''
+Mini Projet B - Équation de la chaleur
+MGA802 
+CHAMBAZ-ROBILLARD
+'''
+
 import Exercice_2 as ex2
 import time as time
 
