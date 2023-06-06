@@ -32,9 +32,9 @@ def créer_arguments():
         dim_x = 20
         dim_y = dim_x
         temp_init = 25
-        temp_cond_isotherme = 25
-        x_c = 4
-        y_c = 7
+        temp_cond_isotherme = 0
+        x_c = 10
+        y_c = 15
         n_x = 100
         n_y = n_x
         ITERATION = 1000
